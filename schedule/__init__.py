@@ -74,6 +74,19 @@ class Scheduler(object):
         for job in sorted(runnable_jobs):
             self._run_job(job)
 
+    def get_pending(self):
+        """
+        Return a list of all jobs intended to run
+
+        Please note that it is *intended behavior that tick() does not
+        run missed jobs*. For example, if you've registered a job that
+        should run every minute and you only call tick() in one hour
+        increments then your job won't be run 60 times in between but
+        only once.
+        """
+        runnable_jobs = (job for job in self.jobs if job.should_run)
+        return runnable_jobs
+
     def run_all(self, delay_seconds=0):
         """
         Run all jobs regardless if they are scheduled to run or not.
